@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -24,8 +25,15 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location);
-            webview2.Source = new Uri($"{dir}/build/index.html");
+
+            webview2.CoreWebView2InitializationCompleted += Webview2_CoreWebView2InitializationCompleted;
+            webview2.Source = new Uri("https://appassets.example/index.html");
+        }
+
+        private void Webview2_CoreWebView2InitializationCompleted(object? sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            webview2.CoreWebView2.SetVirtualHostNameToFolderMapping(
+  "appassets.example", "build", CoreWebView2HostResourceAccessKind.DenyCors);
         }
     }
 }
